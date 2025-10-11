@@ -1,0 +1,61 @@
+# arrivalTime (AT) -> thoi diem tien trinh xuat hien
+# burstTime (BT) ->  thoi gian CPU can de xu li tien trinh
+
+# remainingTime (RT) -> thoi gian con lai (luc dau = burstTime, giam dan khi tien trinh duoc chay)
+
+#Turn Around time (TAT) = Completion time - arrival time
+#Waiting Time (WT) = Turn around time - burst time
+#
+#processes: list chua cac object (P1,P2,P3,...)
+
+n = int(input('Nhap so process: '))
+processes = []
+AT = []
+BT = []
+completed = [False] *n
+
+currentTime =0
+completedCount =0
+finishTime = [0]*n
+
+
+for i in range(n):
+    arrivalTime = int(input(f'Arrival Time P{i+1}: '))
+    burstTime = int(input(f'Burst Time P{i+1}: '))
+    processes.append((arrivalTime,burstTime))
+    AT.append(arrivalTime)
+    BT.append(burstTime)
+    print('\n')
+
+RT = BT.copy()
+
+
+while(completedCount < n):
+    d = float('inf')
+    index = -1
+    for i in range(n):
+        if(AT[i] <= currentTime and not completed[i] and RT[i]< d):
+           d = RT[i]
+           index=i
+    
+    if index != -1:
+        RT[index] -= 1
+
+        if(RT[index] ==0):
+            completed[index] = True
+            completedCount +=1
+            finishTime[index] = currentTime+1
+    else:
+        print("F")
+    
+    currentTime+=1
+
+TAT = [finishTime[i] - AT[i] for i in range(n)]
+WT = [TAT[i] - BT[i] for i in range(n)]
+
+print("\nProcess\tAT\tBT\tFT\tTAT\tWT")
+for i in range(n):
+    print(f"P{i+1}\t{AT[i]}\t{BT[i]}\t{finishTime[i]}\t{TAT[i]}\t{WT[i]}")
+
+print("\nAverage TAT =", sum(TAT)/n)
+print("Average WT =", sum(WT)/n)
