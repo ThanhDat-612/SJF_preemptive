@@ -1,0 +1,67 @@
+# arrivalTime (AT) -> thoi diem tien trinh xuat hien
+# burstTime (BT) ->  thoi gian CPU can de xu li tien trinh
+
+# remainingTime (RT) -> thoi gian con lai (luc dau = burstTime, giam dan khi tien trinh duoc chay)
+
+#Turn Around time (TAT) = Completion time - arrival time
+#Waiting Time (WT) = Turn around time - burst time
+#
+
+n = int(input('Nhap so process: '))
+#processes = []          #processes: list chua cac object (P1,P2,P3,...)
+AT = []                 #list chua cac gia tri AT cua P1,P2,P3,...
+BT = []                 #list chua cac gia tri BT cua P1,P2,P3,...
+completed = [False] *n  # list kiem tra cac P1,P2,P3,... da hoan thanh hay chua
+
+currentTime =0          # thoi gian ban dau
+completedCount =0       # so process da hoan thanh
+finishTime = [0]*n      # list chua thoi gian hoan thanh cua cac process
+
+#nhap input
+for i in range(n):
+    arrivalTime = int(input(f'Arrival Time P{i+1}: '))
+    burstTime = int(input(f'Burst Time P{i+1}: '))
+#    processes.append((arrivalTime,burstTime))
+    AT.append(arrivalTime)
+    BT.append(burstTime)
+    print('\n')
+
+RT = BT.copy()          #khai bao list remainingTime = burstTime ban dau
+
+# thuc thi qua trinh xu ly 
+while(completedCount < n):
+    d = float('inf')    # d(minTime): gia tri nho nhat TAM THOI de tim RT nho nhat
+    index = -1          # lưu vị trí P dc chon
+
+    # duyet tat ca cac P
+    for i in range(n):
+        # neu P da den, chua hoan thanh, RT nho nhat
+        if(AT[i] <= currentTime and not completed[i] and RT[i]< d):
+           d = RT[i]
+           index=i      # cap nhat P dc chon
+    
+    # Neu co P san sang thi giam thoi gian di 1 don vi
+    if index != -1:
+        RT[index] -= 1
+
+        # Neu P chay xong
+        if(RT[index] ==0):
+            completed[index] = True              # danh dau hoan thanh
+            completedCount +=1                   # tang so luong P hoan thanh len 1
+            finishTime[index] = currentTime+1    # ghi lai thoi gian hoan thanh cua P do
+    else:
+        print("F")       # khong co P nao san sang
+    
+    currentTime+=1       # Tang thoi gian hien tai len 1 don vi
+
+# Tinh toan
+TAT = [finishTime[i] - AT[i] for i in range(n)]
+WT = [TAT[i] - BT[i] for i in range(n)]
+
+# In ket qua
+print("\nProcess\tAT\tBT\tFT\tTAT\tWT")
+for i in range(n):
+    print(f"P{i+1}\t{AT[i]}\t{BT[i]}\t{finishTime[i]}\t{TAT[i]}\t{WT[i]}")
+
+print("\nAverage TAT =", sum(TAT)/n)
+print("Average WT =", sum(WT)/n)
