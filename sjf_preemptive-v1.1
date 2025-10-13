@@ -16,6 +16,7 @@ completed = [False] *n  # list kiem tra cac P1,P2,P3,... da hoan thanh hay chua
 currentTime =0          # thoi gian ban dau
 completedCount =0       # so process da hoan thanh
 finishTime = [0]*n      # list chua thoi gian hoan thanh cua cac process
+orderExcuted = []       # Luu thu tu thuc hien
 
 #nhap input
 for i in range(n):
@@ -42,7 +43,8 @@ while(completedCount < n):
     
     # Neu co P san sang thi giam thoi gian di 1 don vi
     if index != -1:
-        RT[index] -= 1
+        RT[index] -= 1  
+        orderExcuted.append(f"P{index+1}")  # them tien trinh duoc chay vao thu tu
 
         # Neu P chay xong
         if(RT[index] ==0):
@@ -50,7 +52,7 @@ while(completedCount < n):
             completedCount +=1                   # tang so luong P hoan thanh len 1
             finishTime[index] = currentTime+1    # ghi lai thoi gian hoan thanh cua P do
     else:
-        print("F")       # khong co P nao san sang
+        orderExcuted.append(f"IDLE")       # khong co P nao san sang
     
     currentTime+=1       # Tang thoi gian hien tai len 1 don vi
 
@@ -65,3 +67,12 @@ for i in range(n):
 
 print("\nAverage TAT =", sum(TAT)/n)
 print("Average WT =", sum(WT)/n)
+
+
+temp = []
+for i in range(0,len(orderExcuted)):
+    if(orderExcuted[i]!=orderExcuted[i-1]):
+        temp.append(orderExcuted[i])
+
+print("Order: ")
+print(" -> ".join(temp))
