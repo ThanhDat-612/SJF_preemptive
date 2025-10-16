@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 def NhapDuLieu():
     n = int(input("Nhap so process: "))
     AT, BT = [], []
@@ -18,7 +19,7 @@ def sjfNonPreemptive(n, AT, BT):
     currentTime = 0
     completedCount = 0
     order = []
-
+    startTime,endTime  = [],[]
     while completedCount < n:
         
         index = -1
@@ -32,6 +33,8 @@ def sjfNonPreemptive(n, AT, BT):
         if index != -1:
             RT[index] -= 1
             order.append(f"P{index+1}")
+            startTime.append(currentTime)
+            endTime.append(currentTime+1)
 
             if(RT[index]==0):
                 completed[index] = True
@@ -47,7 +50,7 @@ def sjfNonPreemptive(n, AT, BT):
         TAT[i] = CT[i] - AT[i]
         WT[i] = TAT[i] - BT[i]
 
-    return CT, TAT, WT, order
+    return CT, TAT, WT, order, startTime, endTime
 
 def XuatDuLieu(n, AT, BT, CT, TAT, WT, order):
     print("Process | Arrival | Burst | Completion | TurnAround | Waiting")
@@ -57,10 +60,37 @@ def XuatDuLieu(n, AT, BT, CT, TAT, WT, order):
     print("Excuted order:")
     print(" -> ".join(order))
 
+def importGanttChart(order,start,end):
+    fig,gnt = plt.subplots()
+    gnt.set_xlabel("TIME")
+    gnt.set_ylabel("PROCESS")
+    gnt.set_title("Gantt Chart")
+
+    #Tao list cac tien trinh duy nhat
+    processes = list(sorted(set(order)))
+
+    y_pos = {p:(i+1)*10 for i,p in enumerate(processes)}
+
+    # Draw
+    for i in range (len(order)):
+        gnt.broken_barh([(start[i], end[i] - start[i])],
+                        (y_pos[order[i]], 8),
+                        facecolors=('tab:blue'))
+        gnt.text(start[i] + (end[i] - start[i]) / 2,
+                 y_pos[order[i]] + 4,
+                 order[i],
+                 ha='center', va='center', color='white', fontsize=9)
+
+    gnt.set_yticks(list(y_pos.values()))
+    gnt.set_yticklabels(processes)
+    gnt.grid(True)
+    plt.show()
+
 def main():
-    n,AT,BT= NhapDuLieu()
-    CT,TAT,WT,order = sjfNonPreemptive(n,AT,BT)
+    n,AT,BT= NhapDuLieu()   
+    CT,TAT,WT,order,startTime,endTime = sjfNonPreemptive(n,AT,BT)
     XuatDuLieu(n,AT,BT,CT,TAT,WT,order)
+    importGanttChart(order,startTime,endTime)
 
 if __name__ == "__main__":
     main()
