@@ -96,6 +96,8 @@ def importGanttChart(order,start,end):
     gnt.set_yticks(list(y_pos.values()))
     gnt.set_yticklabels(processes)
     gnt.grid(True)
+    gnt.set_xticks(range(0, end[-1] + 1))
+    gnt.set_xticklabels([f"{i}s" for i in range(0, end[-1] + 1)])  
     plt.show()
 
 def main():
