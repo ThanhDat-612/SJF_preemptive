@@ -102,7 +102,7 @@ def importGanttChart(order,start,end):
 
 def main():
     n,AT,BT= NhapDuLieu()   
-    CT,TAT,WT,order,startTime,endTime = sjfNonPreemptive(n,AT,BT)
+    CT,TAT,WT,order,startTime,endTime = sjfPreemptive(n,AT,BT)
     XuatDuLieu(n,AT,BT,CT,TAT,WT,order)
     importGanttChart(order,startTime,endTime)
 
